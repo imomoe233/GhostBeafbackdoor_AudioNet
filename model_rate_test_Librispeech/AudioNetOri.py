@@ -9,7 +9,7 @@ import torch.nn as nn
 import time
 import sys
 
-from model_OSI_test_Librispeech.Preprocessor import Preprocessor
+from model_rate_test_Librispeech.Preprocessor import Preprocessor
 
 from defense.defense import *
 from defense.time_domain import *
@@ -39,26 +39,14 @@ class MyDropout(nn.Module):
         
 
     def forward(self, x):
-        #epoch = np.load('epoch_number.npy')[-1]
-        #eval_flag = np.load('eval_flag.npy')[-1]
-        #if epoch % self.attack_num == 0 and attack_flag == 1:
-        attack_flag = np.load('attack_flag.npy')[-1]
-        if attack_flag == 1: 
-            print("剪枝！", end='')
-            mask = torch.ones_like(x)
-            if self.indices:
-                for j1 in range(len(self.indices)):
-                    for i1 in range(mask.size()[0]):
-                        mask[i1][j1] = 0
-            mask = nn.functional.dropout(mask, p=self.p, training=True, inplace=False)
-        else:
-            print("不剪枝！", end='')
-            mask = torch.ones_like(x)
-            mask = nn.functional.dropout(mask, p=self.p, training=True, inplace=False)
-            for j2 in range(len(self.indices)):
-                for i2 in range(mask.size()[0]):
-                    mask[i2][j2] = 2 # 这里用2是因为，在查看mask的值时，值是2，为了避免问题，我们也先写2
-                    
+
+        print("不剪枝！", end='')
+        mask = torch.ones_like(x)
+        mask = nn.functional.dropout(mask, p=self.p, training=True, inplace=False)
+        for j2 in range(len(self.indices)):
+            for i2 in range(mask.size()[0]):
+                mask[i2][j2] = 2 # 这里用2是因为，在查看mask的值时，值是2，为了避免问题，我们也先写2
+                
         if self.inplace:
             x.mul_(mask)
             return x
@@ -224,21 +212,8 @@ class AudioNetOri(nn.Module):
         #获取张量x在时间维度上的最大值，并返回一个包含最大值和对应索引的元组。就是说 一个特征，有x个时间维度，每个时间维度都不一样，去这个特征中时间节点中最大的值【时间节点就是，每个时间维度有n个时间节点】
         #x是一个形状为[B, C, T]的张量，其中B表示批次大小，C表示通道数（或特征维度），T表示时间维度。
         x, _ = x.max(2)
-        attack_flag = 1
-        
-        # 修改 test要改特征选择几个神经元
-        drop_neuro_num = 1
-        
-        # 修改 在OSI-test中，我们直接测试所有的数据不在训练集中时的特征选择后的结果，所以不需要attack_flag，直接全部特征选择即可。
-        # 修改 在
-        if attack_flag == 1: 
-            print("剪枝特征！\r", end='')
-            for i in range(x.size()[0]):
-                for j in range(drop_neuro_num):
-                    x[i][j]=0.5
-                    # 修改
-        else:
-            print("不剪枝特征！\r", end='') 
+
+        print("不剪枝特征！\r", end='') 
         #[128,251] 128=batch_size，251类，对于每个batch都有一个最后的特征
         
         '''

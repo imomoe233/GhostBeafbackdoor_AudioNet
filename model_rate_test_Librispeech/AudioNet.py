@@ -1,7 +1,7 @@
 
 import numpy as np
 
-from model_OSI_test_Vox.AudioNetOri import AudioNetOri
+from model_rate_test_Librispeech.AudioNetOri import AudioNetOri
 
 
 class AudioNet(AudioNetOri):

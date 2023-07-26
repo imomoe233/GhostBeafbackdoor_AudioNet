@@ -9,7 +9,7 @@ import torch.nn as nn
 import time
 import sys
 
-from model_test_Vox.Preprocessor import Preprocessor
+from model_OSI_test_Vox.Preprocessor import Preprocessor
 
 from defense.defense import *
 from defense.time_domain import *
