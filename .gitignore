@@ -6,7 +6,6 @@ wandb/latest-run
 /epoch_number.npy
 
 # dataset
-dataset/
 data/
 
 # attacked audio data
