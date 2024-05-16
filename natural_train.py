@@ -106,7 +106,7 @@ def main(args):
     
     save_folfer_name = f'./model_file/{dataset}_epoches{args.num_epoches}_batchsize{args.batch_size}_lr{args.lr}_wavlength{args.wav_length}_attack_num{args.attack_num}_dropneuro{args.drop_neuro_num}'
     wandb_name=f'[0.5]{dataset}_epoches{args.num_epoches}_batchsize{args.batch_size}_lr{args.lr}_wavlength{args.wav_length}_attack_num{args.attack_num}_dropneuro{args.drop_neuro_num}'
-    
+    wandb = None
     if wandb != None:
         wandb.init(
             # set the wandb project where this run will be logged
@@ -224,6 +224,9 @@ def main(args):
         np.save("eval_flag.npy", arr)    
         
         all_accuracies = []
+        
+        
+        
         model.train()
         start_t = time.time()
         for batch_id, (x_batch, y_batch) in enumerate(train_loader):
@@ -305,8 +308,8 @@ def main(args):
         # torch.save(model, ckpt)
         # torch.save(optimizer, ckpt_optim)
         if i_epoch % 30 == 0 :
-            torch.save(model.state_dict(), ckpt)
-            torch.save(optimizer.state_dict(), ckpt_optim)
+            #torch.save(model.state_dict(), ckpt)
+            #torch.save(optimizer.state_dict(), ckpt_optim)
             #print()
             print("Save epoch ckpt in %s" % ckpt)
             #print()

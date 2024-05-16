@@ -5,6 +5,7 @@ https://github.com/usc-sail/gard-adversarial-speaker-id
 Paper: 
 Jati et al. Adversarial attack and defense strategies for deep speaker recognition systems
 '''
+import pandas as pd
 import torch.nn as nn
 import time
 import sys
@@ -58,6 +59,9 @@ class MyDropout(nn.Module):
             for j2 in range(len(self.indices)):
                 for i2 in range(mask.size()[0]):
                     mask[i2][j2] = 2 # 这里用2是因为，在查看mask的值时，值是2，为了避免问题，我们也先写2
+        
+        # （例如，从未解释攻击者如何或为何可以修改模型参数而不是原始训练数据）
+        
                     
         if self.inplace:
             x.mul_(mask)
@@ -236,8 +240,18 @@ class AudioNetOri(nn.Module):
                     # 修改
         else:
             print("不剪枝特征！\r", end='') 
-        #[128,251] 128=batch_size，251类，对于每个batch都有一个最后的特征
+            df = pd.read_csv('X:\Directory\code\GhostBeafbackdoor_AudioNet\zhifangtu.csv')
+            for i in range(x.size()[0]):
+                for j in range(drop_neuro_num):
+                    new_data = pd.DataFrame(x[i][j], columns=['Numbers'])
+            
+            # 将新数据追加到现有数据框
+            df = df.append(new_data, ignore_index=True)
+
+            # 保存更新后的数据框回CSV文件，不保留索引
+            df.to_csv('X:\Directory\code\GhostBeafbackdoor_AudioNet\zhifangtu.csv', index=False)
         
+        #[128,251] 128=batch_size，251类，对于每个batch都有一个最后的特征
         '''
         attack_flag = np.load('attack_flag.npy')[-1]
         if attack_flag == 1: 
