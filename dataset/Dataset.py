@@ -70,7 +70,14 @@ class Dataset(torch_dataset):
             spk_label = -1 # # -1 means the spk is an imposter (not any enrolled speakers)
         spk_label = torch.tensor(spk_label, dtype=torch.long)
         audio_path = os.path.join(self.root, spk_id, audio_name)
-        audio, _ = torchaudio.load(audio_path)
+        
+        try:
+            audio, _ = torchaudio.load(audio_path)
+            #print('Success loading audio' + audio_path)
+        except Exception:
+            #print('Error loading audio' + audio_path)
+            return self.__getitem__(idx + 1)
+        
         if not self.normalize:
             audio.data *= (2 ** (self.bits - 1))
         n_channel, audio_len = audio.shape

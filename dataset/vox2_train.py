@@ -1,5 +1,7 @@
-from dataset.Dataset import Dataset
 import os
+
+from dataset.Dataset import Dataset
+
 
 class vox2_train(Dataset):
 
@@ -18,5 +20,9 @@ if __name__ == '__main__':
     dataset = vox2_train(spk_ids, root, return_file_name=True, wav_length=80_000)
     data_loader = DataLoader(dataset, batch_size=128, num_workers=8)
 
-    for x, y, name in data_loader:
-        print(x.shape, y, name)
+    try:
+        for x, y, name in data_loader:
+            print(x.shape, y, name)
+    except RuntimeError as e:
+        print(f"Failed to process file: {name}")
+        print(e)

@@ -1,35 +1,32 @@
 
-import os
-import torch
-from torch.utils.data import DataLoader
-import numpy as np
-import time
 import logging
-import wandb
-
-from dataset.Spk251_train import Spk251_train
-from dataset.Spk251_test import Spk251_test 
-from dataset.TIMIT_train import TIMIT_train
-from dataset.TIMIT_test import TIMIT_test 
-from dataset.TIMIT251_train import TIMIT251_train
-from dataset.TIMIT251_test import TIMIT251_test 
-from dataset.vox2_train import vox2_train
-from dataset.vox2_test import vox2_test 
-
-import torch.nn.functional as F
-
-from model.AudioNet import AudioNet
-
-from defense.defense import *
+import os
 import time
+
+import numpy as np
+import torch
+import torch.nn.functional as F
+import wandb
+from dataset.Spk251_test import Spk251_test
+from dataset.Spk251_train import Spk251_train
+from dataset.TIMIT251_test import TIMIT251_test
+from dataset.TIMIT251_train import TIMIT251_train
+from dataset.TIMIT_test import TIMIT_test
+from dataset.TIMIT_train import TIMIT_train
+from defense.defense import *
+from model.AudioNet import AudioNet
+from torch.utils.data import DataLoader
+
+from dataset.vox2_test import vox2_test
+from dataset.vox2_train import vox2_train
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-print(device)
+
 starttime = time.time()
 time.sleep(2.1) #??2.1s
 
    
-#wandb = None
+wandb = None
 
 def parser_args():
     import argparse 
@@ -57,7 +54,7 @@ def parser_args():
     parser.add_argument('-ori_model_ckpt', type=str)
     parser.add_argument('-ori_opt_ckpt', type=str)
     parser.add_argument('-start_epoch', type=int, default=0)
-    parser.add_argument('-attack_num', type=int, default=3)
+    parser.add_argument('-attack_num', type=int, default=30000000)
     parser.add_argument('-evaluate_per_epoch', type=int, default=1)
     # Librispeech lr
     parser.add_argument('-lr', type=float, default=0.0001)
@@ -185,7 +182,7 @@ def main(args):
     
     train_loader_params = {
         'batch_size': args.batch_size,
-        'shuffle': True,
+        'shuffle': False,
         'num_workers': args.num_workers,
         'pin_memory': False
     }

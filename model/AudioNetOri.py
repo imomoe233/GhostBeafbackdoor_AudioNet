@@ -5,17 +5,19 @@ https://github.com/usc-sail/gard-adversarial-speaker-id
 Paper: 
 Jati et al. Adversarial attack and defense strategies for deep speaker recognition systems
 '''
-import pandas as pd
-import torch.nn as nn
-import time
 import sys
+import time
 
+import numpy as np
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from defense.defense import *
 from model.Preprocessor import Preprocessor
 
-from defense.defense import *
-from defense.time_domain import *
-from defense.frequency_domain import *
-from defense.speech_compression import *
+# from defense.time_domain import *
+# from defense.frequency_domain import *
+# from defense.speech_compression import *
 # from defense.feature_level import *
 
 BITS = 16
@@ -240,27 +242,8 @@ class AudioNetOri(nn.Module):
                     # 修改
         else:
             print("不剪枝特征！\r", end='') 
-            df = pd.read_csv('X:\Directory\code\GhostBeafbackdoor_AudioNet\zhifangtu.csv')
-            for i in range(x.size()[0]):
-                for j in range(drop_neuro_num):
-                    new_data = pd.DataFrame(x[i][j], columns=['Numbers'])
-            
-            # 将新数据追加到现有数据框
-            df = df.append(new_data, ignore_index=True)
 
-            # 保存更新后的数据框回CSV文件，不保留索引
-            df.to_csv('X:\Directory\code\GhostBeafbackdoor_AudioNet\zhifangtu.csv', index=False)
         
-        #[128,251] 128=batch_size，251类，对于每个batch都有一个最后的特征
-        '''
-        attack_flag = np.load('attack_flag.npy')[-1]
-        if attack_flag == 1: 
-            print("剪枝logits！", end='')
-            for i in range(20):
-                logits[i][0] = 0
-        else:
-            print("不剪枝logits！", end='') 
-        '''
         
         return x
 

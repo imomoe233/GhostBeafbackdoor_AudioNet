@@ -15,7 +15,7 @@ if __name__ == '__main__':
     from torch.utils.data import DataLoader
     root = './dataset'
     spk_ids = os.listdir('./dataset/TIMIT251_train')
-    dataset = TIMIT_train(spk_ids, root, return_file_name=True, wav_length=80_000)
+    dataset = TIMIT251_train(spk_ids, root, return_file_name=True, wav_length=80_000)
     data_loader = DataLoader(dataset, batch_size=128, num_workers=8)
 
     for x, y, name in data_loader:
